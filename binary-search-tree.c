@@ -13,8 +13,8 @@
 
 typedef struct node {
 	int key;
-	struct node *left;
-	struct node *right;
+	struct node* left;
+	struct node* right;
 } Node;
 
 int initializeBST(Node** h);
@@ -38,8 +38,8 @@ int main()
 	int key;
 	Node* head = NULL;
 	Node* ptr = NULL;	/* temp */
-    printf("2020039071 JoJunHwa\n");
-	do{
+
+	do {
 		printf("\n\n");
 		printf("----------------------------------------------------------------\n");
 		printf("                   Binary Search Tree #1                        \n");
@@ -54,7 +54,7 @@ int main()
 		printf("Command = ");
 		scanf(" %c", &command);
 
-		switch(command) {
+		switch (command) {
 		case 'z': case 'Z':
 			initializeBST(&head);
 			break;
@@ -75,7 +75,7 @@ int main()
 			printf("Your Key = ");
 			scanf("%d", &key);
 			ptr = searchIterative(head, key);
-			if(ptr != NULL)
+			if (ptr != NULL)
 				printf("\n node [%d] found at %p\n", ptr->key, ptr);
 			else
 				printf("\n Cannot find the node [%d]\n", key);
@@ -84,7 +84,7 @@ int main()
 			printf("Your Key = ");
 			scanf("%d", &key);
 			ptr = searchRecursive(head->left, key);
-			if(ptr != NULL)
+			if (ptr != NULL)
 				printf("\n node [%d] found at %p\n", ptr->key, ptr);
 			else
 				printf("\n Cannot find the node [%d]\n", key);
@@ -104,7 +104,7 @@ int main()
 			break;
 		}
 
-	}while(command != 'q' && command != 'Q');
+	} while (command != 'q' && command != 'Q');
 
 	return 1;
 }
@@ -112,7 +112,7 @@ int main()
 int initializeBST(Node** h) {
 
 	/* if the tree is not empty, then remove all allocated nodes from the tree*/
-	if(*h != NULL)
+	if (*h != NULL)
 		freeBST(*h);
 
 	/* create a head node */
@@ -123,14 +123,17 @@ int initializeBST(Node** h) {
 	return 1;
 }
 
-
-
-void inorderTraversal(Node* ptr)
+void inorderTraversal(Node* ptr) //LVR식으로 출력
 {
-
+	if (ptr != NULL) //ptr이 NULL이 아니라면
+	{
+		inorderTraversal(ptr->left); //순환 호출을 통해서 ptr이 가장 왼쪽 자식을 가리키게 하고
+		printf("   [%d]",ptr->key); //ptr의 key 프린트
+		inorderTraversal(ptr->right);
+	}
 }
 
-void preorderTraversal(Node* ptr)
+void preorderTraversal(Node* ptr) //VLR식으로 출력
 {
 
 }
@@ -140,31 +143,71 @@ void postorderTraversal(Node* ptr)
 
 }
 
-
 int insert(Node* head, int key)
 {
-
+	Node* node = (Node*)malloc(sizeof(Node));
+	Node* temp;
+	node->key = key;
+	node->left = NULL;
+	node->right = NULL;
+	if (head->left == NULL) //비어있는 트리라면
+	{
+		head->left = node;
+	}
+	else //트리가 비어있지 않다면
+	{
+		temp = head->left; //temp는 트리의 첫 번째 원소 가리킴
+		while (temp->left!=NULL || temp->right != NULL )
+		{
+			if (temp->key >= key) //temp가 가리키는 곳의 key가 key보다 크거나 같다면
+			{
+				if (temp->left == NULL)
+					break;
+				temp = temp->left;
+			}
+			else
+			{
+				if (temp->right == NULL)
+					break;
+				temp = temp->right;
+			}
+		}
+		//반복문을 나왔다면 temp의 child로 node가 들어가면 된다.
+		if (temp->key >= key) //temp의 key가 key보다 크거나 같다면 temp의 left가 node
+		{
+			temp->left = node;
+			node->left = NULL;
+			node->right = NULL;
+		}
+		else //아니라면 temp의 right가 node
+		{
+			temp->right = node;
+		}
+	}
+	return 0;
 }
 
 int deleteLeafNode(Node* head, int key)
 {
-
+	return 0;
 }
 
 Node* searchRecursive(Node* ptr, int key)
 {
-
+	return NULL;
 }
 
 Node* searchIterative(Node* head, int key)
 {
-
+	return NULL;
 }
-
 
 int freeBST(Node* head)
 {
-
+	//free가 호출되는 경우 트리가 비지않았을 때 뿐이다
+	Node* p = head->left; //p는 첫 번째 
+	Node* next;
+	return 0;
 }
 
 
