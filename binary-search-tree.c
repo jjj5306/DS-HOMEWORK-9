@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#pragma warning(disable:4996)
 
 typedef struct node {
 	int key;
@@ -128,19 +129,29 @@ void inorderTraversal(Node* ptr) //LVR식으로 출력
 	if (ptr != NULL) //ptr이 NULL이 아니라면
 	{
 		inorderTraversal(ptr->left); //순환 호출을 통해서 ptr이 가장 왼쪽 자식을 가리키게 하고
-		printf("   [%d]",ptr->key); //ptr의 key 프린트
+		printf("[%d]   ",ptr->key); //ptr의 key 프린트
 		inorderTraversal(ptr->right);
 	}
 }
 
 void preorderTraversal(Node* ptr) //VLR식으로 출력
 {
-
+	if (ptr != NULL) //ptr이 NULL이 아니라면
+	{
+		printf("[%d]   ", ptr->key); //ptr의 key 프린트
+		preorderTraversal(ptr->left); //순환 호출을 통해서 ptr이 왼쪽으로 가면서 왼쪽 자식들 프린트
+		preorderTraversal(ptr->right);
+	}
 }
 
-void postorderTraversal(Node* ptr)
+void postorderTraversal(Node* ptr) //LRV식으로 출력
 {
-
+	if (ptr != NULL) //ptr이 NULL이 아니라면
+	{
+		postorderTraversal(ptr->left); //순환 호출을 통해서 ptr이 가장 왼쪽 자식을 가리키게 하고
+		postorderTraversal(ptr->right);
+		printf("[%d]   ", ptr->key); //ptr의 key 프린트
+	}
 }
 
 int insert(Node* head, int key)
@@ -189,16 +200,74 @@ int insert(Node* head, int key)
 
 int deleteLeafNode(Node* head, int key)
 {
+	Node* temp,* pre;
+	if (head->left == NULL) //트리가 이미 비어있다면 
+		printf("tree is empty\n");
+	else //아니라면
+	{
+		pre = head;
+		temp = head->left; //temp는 트리의 첫 번째 노드를 가리킴
+		while (temp!=NULL)
+		{
+			if (temp->key == key) //temp의 key가 찾는 key와 같고
+			{
+				if (temp->left == NULL && temp->right == NULL)//temp가 leaf 노드이고
+				{
+					if (pre->left == temp) // pre의 left child가 temp 라면 pre의 left를 NULL로 만듬
+						pre->left = NULL; 
+					else //pre의 right child 가 temp 라면 pre의 right를 NULL로 만듬
+						pre->right = NULL;
+						free(temp); //삭제
+						return 0; //종료
+				}
+				else //leaf 노드가 아니라면
+				{
+					printf("the node [%d] is not a leaf\n", temp->key);
+					return 0;
+				}
+			}
+			else if (temp->key >= key) //temp의 key가 찾는 key보다 크거나 같다면 tmep는 왼쪽 자식을 가리키고 pre는 temp의 부모를 가리킴
+			{
+				pre = temp;
+				temp = temp->left;
+			}
+			else//아니라면 temp는 오른쪽 자식을 가리키고 pre는 temp의 부모를 가리킴
+			{
+				pre = temp;
+				temp = temp->right;
+			}
+		}
+		//반복문을 나왔으므로 key는 트리에 없다
+		printf("node [%d] is not in tree\n",key);
+	}
 	return 0;
 }
 
 Node* searchRecursive(Node* ptr, int key)
 {
-	return NULL;
+	if(ptr == NULL)
+		return NULL;
+	if (ptr->key == key)
+		return ptr;
+	else if (ptr->key > key)
+		return searchRecursive(ptr->left, key);
+	else
+		return searchRecursive(ptr->right, key);
 }
 
 Node* searchIterative(Node* head, int key)
 {
+	Node* temp = head->left;
+	while (temp != NULL)
+	{
+		if (temp->key == key)//temp의 key와 찾는 key가 같다면 temp가 가리키는 주소 리턴
+			return temp;
+		else if (temp->key > key)
+			temp = temp->left;
+		else
+			temp = temp->right;
+	}
+	//반복문을 나왔다는 것은 key가 트리에 없다는 것이다
 	return NULL;
 }
 
