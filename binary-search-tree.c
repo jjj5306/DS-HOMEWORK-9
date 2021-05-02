@@ -31,7 +31,7 @@ Node* searchIterative(Node* head, int key);  /* search the node for the key */
 int freeBST(Node* head); /* free all memories allocated to the tree */
 
 /* you may add your own defined functions if necessary */
-
+void freeTree(Node* head);
 
 int main()
 {
@@ -162,9 +162,7 @@ int insert(Node* head, int key)
 	node->left = NULL;
 	node->right = NULL;
 	if (head->left == NULL) //비어있는 트리라면
-	{
 		head->left = node;
-	}
 	else //트리가 비어있지 않다면
 	{
 		temp = head->left; //temp는 트리의 첫 번째 원소 가리킴
@@ -187,8 +185,6 @@ int insert(Node* head, int key)
 		if (temp->key >= key) //temp의 key가 key보다 크거나 같다면 temp의 left가 node
 		{
 			temp->left = node;
-			node->left = NULL;
-			node->right = NULL;
 		}
 		else //아니라면 temp의 right가 node
 		{
@@ -271,15 +267,18 @@ Node* searchIterative(Node* head, int key)
 	return NULL;
 }
 
-int freeBST(Node* head)
+int freeBST(Node* head) //inorder처럼 recursive 하게 동작
 {
-	//free가 호출되는 경우 트리가 비지않았을 때 뿐이다
-	Node* p = head->left; //p는 첫 번째 
-	Node* next;
+	if(!head->left) freeTree(head->left); //트리에 원소가 있다면 freeTree 함수를 호출하여 free
+	free(head); //head도 free해준다
 	return 0;
 }
 
-
-
-
-
+void freeTree(Node* head) //트리를 free해주는 방식을 recursive하게 구현하기 위해 새로운 함수 사용
+{
+	if (head == NULL)
+		return;
+	freeBST(head->left);
+	freeBST(head->right);
+	free(head);
+}
